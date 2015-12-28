@@ -1,4 +1,5 @@
 from slugify import slugify as pyslugify
+from django.db.models.base import ModelBase
 from django.utils import six
 if six.PY3:
     from django.utils.encoding import smart_str
@@ -24,7 +25,8 @@ def uuslug(s, instance, entities=True, decimal=True, hexadecimal=True,
 
     """ This method tries a little harder than django's django.template.defaultfilters.slugify. """
 
-    if hasattr(instance, 'objects'):
+    # from https://github.com/un33k/django-uuslug/pull/8/files
+    if isinstance(instance, ModelBase):
         raise Exception("Error: you must pass an instance to uuslug, not a model.")
 
     queryset = instance.__class__.objects.all()
